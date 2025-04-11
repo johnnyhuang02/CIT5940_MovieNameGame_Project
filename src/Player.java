@@ -16,4 +16,7 @@ public class Player {
     public String getWinCondition() { return winCondition; }
 
     public void incrementScore() { score++; }
+
+    // check if this movie count as a winning count for this player
+    public boolean checkWinCondition(Movie movie) { return false; }
 }

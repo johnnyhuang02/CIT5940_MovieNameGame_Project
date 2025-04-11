@@ -11,4 +11,8 @@ public class Person {
     // Getters
     public String getName() { return name; }
     public String getRole() { return role; }
+
+    public boolean equals(Person other) {
+        return (this.name.equals(other.getName())) && (this.role.equals(other.getRole()));
+    }
 }

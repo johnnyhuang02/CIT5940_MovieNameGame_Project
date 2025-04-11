@@ -1,7 +1,7 @@
 
 
 public class Validator {
-    public boolean isValidMove(Movie currentMovie, Movie newMovie, String connectionType) {
+    public boolean isValidMovie(Movie currentMovie, Movie newMovie, String connectionType) {
         return currentMovie.isConnectedTo(newMovie, connectionType);
     }
 

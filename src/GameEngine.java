@@ -12,6 +12,8 @@ public class GameEngine {
 
     // Main game loop
     public void startGame() {
+        initializeGame();
+        // processMovie()
         while (!isGameOver()) {
             // 1. Display current state
             // 2. Get player input
@@ -23,5 +25,9 @@ public class GameEngine {
     private boolean isGameOver() {
         // Check win/loss conditions
         return false;
+    }
+
+    private void initializeGame() {
+        //
     }
 }
