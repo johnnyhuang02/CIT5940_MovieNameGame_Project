@@ -12,7 +12,17 @@ public class Person {
     public String getName() { return name; }
     public String getRole() { return role; }
 
-    public boolean equals(Person other) {
-        return (this.name.equals(other.getName())) && (this.role.equals(other.getRole()));
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person other = (Person) obj;
+        return this.name.equals(other.name) && this.role.equals(other.role);
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() * 31 + role.hashCode();
+    }
+
 }

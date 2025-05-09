@@ -32,6 +32,7 @@ public class GameState {
 
     // check if a movie if already been used in this game
     public boolean isUsed(Movie movie) {
-        return false;
+        return playedMovie.contains(movie) || currentMovie.equals(movie);
     }
+
 }

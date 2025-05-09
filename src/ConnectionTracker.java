@@ -10,11 +10,12 @@ public class ConnectionTracker {
 
     public void updateCondition(String connection) {
         // update on the count, increment by 1
+    	connectionCounter.put(connection, getUsage(connection) + 1);
     }
     public int getUsage(String connection) {
         // check the usage of a connection
         // if not found, initialize to 0
         // else return get(connection)
-        return -1;
+    	return connectionCounter.getOrDefault(connection, 0);
     }
 }

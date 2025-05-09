@@ -35,8 +35,29 @@ public class Movie {
         // in each case, call corresponding isConnectedBy*()
     }
 
-    public boolean isConnectedByGenre(Movie other) { return false; }
-    public boolean isConnectedByCast(Movie other) { return false; }
-    public boolean isConnectedByCrew(Movie other) { return false; }
-    public boolean isConnectedByYear(Movie other) { return false; }
+    public boolean isConnectedByGenre(Movie other) {
+        for (String genre : genres) {
+            if (other.getGenres().contains(genre)) return true;
+        }
+        return false;
+    }
+
+    public boolean isConnectedByCast(Movie other) {
+        for (Person p : cast) {
+            if (other.getCast().contains(p)) return true;
+        }
+        return false;
+    }
+
+    public boolean isConnectedByCrew(Movie other) {
+        for (Person p : crew) {
+            if (other.getCrew().contains(p)) return true;
+        }
+        return false;
+    }
+
+    public boolean isConnectedByYear(Movie other) {
+        return this.year == other.getYear();
+    }
+
 }

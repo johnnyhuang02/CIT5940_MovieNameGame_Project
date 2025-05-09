@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieDatabase {
@@ -9,6 +10,11 @@ public class MovieDatabase {
     }
 
     public Movie getMovieByTitle(String title) {
+    	for (Movie m : movieList) {
+            if (m.getTitle().equalsIgnoreCase(title)) {
+                return m;
+            }
+        }
         return null;
     }
 
@@ -16,7 +22,13 @@ public class MovieDatabase {
     // using movieNames
     public List<String> getSuggestions(String prefix) {
 
-        return null;
+    	List<String> result = new ArrayList<>();
+        for (String name : movieNames) {
+            if (name.toLowerCase().startsWith(prefix.toLowerCase())) {
+                result.add(name);
+            }
+        }
+        return result;
     }
 
 
