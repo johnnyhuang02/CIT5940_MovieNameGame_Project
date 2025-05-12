@@ -85,6 +85,26 @@ public class MovieDatabaseTest {
         assertNotNull(crew);
     }
 
+    @Test
+    public void testGetRandomMovie() throws CsvValidationException, IOException, InterruptedException {
+        String moviesPath = "tmdb_5000_movies.csv";
+        String creditsPath = "tmdb_5000_credits.csv";
+
+        MovieDatabase db = new MovieDatabase();
+
+        // generate a random movie
+        db.loadFromCSV(moviesPath, creditsPath);
+        Movie randomMovie = db.selectRandomMovie();
+        assertNotNull(randomMovie);
+        System.out.println(randomMovie.getTitle());
+
+        // generate another random movie
+        Movie anotherRandomMovie = db.selectRandomMovie();
+        assertNotNull(anotherRandomMovie);
+
+        // two random movies are likely not the same
+        assertNotEquals(randomMovie.getTitle(), anotherRandomMovie.getTitle());
+    }
 
 
 }

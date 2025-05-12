@@ -113,7 +113,6 @@ public class MovieDatabase {
         }
     }
 
-
     // private helper function 2:
     // load from "tmdb_5000_movies.csv" for genre, year
     private void loadMetadata(String path)
@@ -161,7 +160,6 @@ public class MovieDatabase {
             }
         }
     }
-
 
 
     // --------------- API Loader ---------------
@@ -293,6 +291,25 @@ public class MovieDatabase {
             titleSuggestion.add(suggestions.get(i).getTerm());
         }
         return titleSuggestion;
+    }
+
+    // pick a random
+    public Movie selectRandomMovie() {
+        List<Integer> allMovieIds = new ArrayList<>(moviesById.keySet());
+        // if allMovieId is empty, return default Inception
+        if (allMovieIds.isEmpty()) {
+            return new Movie(
+                    "Inception",
+                    2010,
+                    Arrays.asList("sci-fi", "thriller"),
+                    new ArrayList<>(),
+                    new ArrayList<>());
+        }
+
+        Random random = new Random();
+        int randomIndex = random.nextInt(allMovieIds.size());
+        Integer chosenId = allMovieIds.get(randomIndex);
+        return moviesById.get(chosenId);
     }
 
     // --------------- helper functions -------------------------
