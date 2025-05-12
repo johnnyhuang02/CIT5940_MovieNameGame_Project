@@ -17,6 +17,12 @@ public class MovieDatabaseTest {
         MovieDatabase db = new MovieDatabase();
 
         db.loadFromCSV(moviesPath, creditsPath);
+
+        // try getSuggestions with prefix a, get at most size 10
+        List<String> suggestions = db.getSuggestions("a");
+        assertTrue(suggestions.size() <= 10);
+
+
         List<Movie> avatars = db.getMovieByTitle("Avatar");
         assertNotNull("getMovieByTitle should not return null", avatars);
         assertFalse("There should be at least one movie called Avatar", avatars.isEmpty());
@@ -57,6 +63,9 @@ public class MovieDatabaseTest {
         List<Movie> avatars = db.getMovieByTitle("Avatar");
         assertNotNull("getMovieByTitle should not return null", avatars);
         assertFalse("There should be at least one movie called Avatar", avatars.isEmpty());
+
+        assertEquals(1, db.getSuggestions("").size());
+        assertEquals("avatar", db.getSuggestions("a").get(0));
 
         Movie avatar = avatars.get(0);
         // Check the year

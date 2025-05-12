@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.*;
 
 public class GameEngine {
@@ -17,7 +18,7 @@ public class GameEngine {
         this.gameState = new GameState(startingMovie, p1, p2);
     }
 
-    public void startGame() {
+    public void startGame() throws IOException, InterruptedException {
         List<String> recent = new LinkedList<>();
         recent.add(gameState.getCurrentMovie().getTitle());
 
@@ -40,7 +41,7 @@ public class GameEngine {
                 break;
             }
 
-            Movie chosen = movieDB.getMovieByTitle(input);
+            Movie chosen = movieDB.getMovieByTitle(input).get(0);
             if (chosen == null || gameState.isUsed(chosen)) {
                 ui.showMessage("Invalid movie or already used. Try again.");
                 continue;

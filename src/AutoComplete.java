@@ -7,7 +7,7 @@ import java.io.IOException;
 public class AutoComplete implements IAutoComplete {
 
     private Node root;
-    private int maxSuggestions;
+    private int maxSuggestions = 10;
 
     // empty trie
     public AutoComplete() {
@@ -169,7 +169,8 @@ public class AutoComplete implements IAutoComplete {
 
         suggestions.sort(ITerm.byReverseWeightOrder());
 
-        return suggestions;
+        int end = Math.min(maxSuggestions, termList.size());
+        return new ArrayList<>(termList.subList(0, end));
     }
 
     private void collectTerms(Node node, List<ITerm> list) {

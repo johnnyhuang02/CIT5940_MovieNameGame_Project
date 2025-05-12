@@ -15,6 +15,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvMalformedLineException;
 import com.opencsv.exceptions.CsvValidationException;
 
+import java.util.stream.Collectors;
 
 public class MovieDatabase {
 
@@ -28,9 +29,8 @@ public class MovieDatabase {
     private static final String BASE_URL = "https://api.themoviedb.org/3";
     private final HttpClient http = HttpClient.newHttpClient();
 
-    // private trie stored used for Autocomplete suggestions
-    // TODO
-    // private Trie titleTrie = new Trie();
+    // private autocomplete stored used for Autocomplete suggestions
+     private AutoComplete auto = new AutoComplete();
 
     // debug usage
 //    private int errorCounts = 0;
@@ -55,6 +55,12 @@ public class MovieDatabase {
 
         // load the "tmdb_5000_movies.csv" for genre, year
         loadMetadata(moviesCsvPath);
+
+        for (Map.Entry<String, List<Integer>> entry : idsByTitle.entrySet()) {
+            String titleKey = entry.getKey();
+            long weight = entry.getValue().size();
+            auto.addWord(titleKey, weight);
+        }
     }
 
     // private helper function 1:
@@ -171,7 +177,7 @@ public class MovieDatabase {
             // cache
             moviesById.put(id, m);
             indexTitle(m.getTitle(), id);
-
+            auto.addWord(m.getTitle().toLowerCase(), 1);
             out.add(m);
         }
 
@@ -193,7 +199,9 @@ public class MovieDatabase {
                 HttpRequest.newBuilder(URI.create(url)).GET().build(),
                 HttpResponse.BodyHandlers.ofString()
         );
-        if (resp.statusCode() != 200) return Collections.emptyList();
+        if (resp.statusCode() != 200) {
+            return Collections.emptyList();
+        }
 
         // Parse the JSON array of results, extracting the "id" field from each object
         JsonArray results = JsonParser
@@ -277,6 +285,16 @@ public class MovieDatabase {
         return result;
     }
 
+    // getSuggestions(String prefix)
+    public List<String> getSuggestions(String prefix) {
+        List<ITerm> suggestions = auto.getSuggestions(prefix);
+        List<String> titleSuggestion = new ArrayList<>();
+        for (int i = 0; i < suggestions.size(); i++) {
+            titleSuggestion.add(suggestions.get(i).getTerm());
+        }
+        return titleSuggestion;
+    }
+
     // --------------- helper functions -------------------------
 
     private void indexTitle(String title, int id) {
@@ -291,7 +309,6 @@ public class MovieDatabase {
         }
         return idx;
     }
-
 
     private List<String> parseGenreNames(String json) {
         List<String> names = new ArrayList<>();
