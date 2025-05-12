@@ -23,6 +23,20 @@ public class Movie {
     public List<Person> getCast() {return cast; }
     public List<Person> getCrew() { return crew; }
 
+    // Setters
+    public void setCast(List<Person> cast) {
+        this.cast = cast;
+    }
+    public void setCrew(List<Person> crew) {
+        this.crew = crew;
+    }
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+    public void setYear(int year) {
+        this.year = year;
+    }
+
     // Check connection to another movie (shared actor/director/etc.)
     public boolean isConnectedTo(Movie other, String connectionType) {
         // Logic to compare crew based on connectionType
