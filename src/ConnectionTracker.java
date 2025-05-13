@@ -1,11 +1,12 @@
+import java.util.HashMap;
 import java.util.Map;
 
 public class ConnectionTracker {
-    private Map<String, Integer> connectionCounter;
+    private Map<String, Integer> connectionCounter = new HashMap<>();
 
     // check if a connection has been used for less than 3 times
     public boolean canUse(String connection) {
-        return (connectionCounter.get(connection) < 3);
+        return getUsage(connection) < 3;
     }
 
     public void updateCondition(String connection) {
@@ -17,5 +18,8 @@ public class ConnectionTracker {
         // if not found, initialize to 0
         // else return get(connection)
     	return connectionCounter.getOrDefault(connection, 0);
+    }
+    public void resetAll() {
+        connectionCounter.clear();
     }
 }

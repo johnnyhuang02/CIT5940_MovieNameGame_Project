@@ -12,7 +12,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvMalformedLineException;
 import com.opencsv.exceptions.CsvValidationException;
 
 import java.util.stream.Collectors;
@@ -100,7 +99,7 @@ public class MovieDatabase {
                     indexTitle(title, movieId);
 //                    errorCounts += 1;
 
-                } catch (CsvMalformedLineException e) {
+                } catch (CsvValidationException e) {
                     System.err.println(rowNum + " skipping malformed CSV line due to unterminated quoted field");
                     e.printStackTrace();
                     // continue with next line
