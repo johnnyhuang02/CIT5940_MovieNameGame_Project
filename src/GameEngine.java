@@ -16,14 +16,8 @@ public class GameEngine {
     // storing recent movies up to 5
     private final Deque<String> recentTitles = new ArrayDeque<>();
 
-//    private String lastMessage = "";
-//    private final List<String> finalMessages = new ArrayList<>();
-
-
     public GameEngine(Movie startingMovie, Player p1, Player p2, MovieDatabase movieDB) {
         this.movieDB = movieDB;
-//        this.ui = new TextUI();
-//        this.timer = new TimerUI();
         this.validator = new Validator();
         this.connectionTracker = new ConnectionTracker();
         this.gameState = new GameState(startingMovie, p1, p2);
@@ -31,7 +25,6 @@ public class GameEngine {
     }
 
     public void startTurn() {
-//        lastMessage = "";
         connectionTracker.resetAll();
         displayBuffer.clear();
     }
@@ -41,7 +34,6 @@ public class GameEngine {
         if (gameOver) {
             return;
         }
-
 
         Player player = gameState.getActivePlayer();
         Movie current = gameState.getCurrentMovie();
