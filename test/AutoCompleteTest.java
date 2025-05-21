@@ -35,7 +35,7 @@ public class AutoCompleteTest {
     // Test addWord skips invalid words containing non-letter chars
     @Test
     public void testAddWordInvalidCharsSkipped() {
-        ac.addWord("app1", 5);
+        ac.addWord("app1~", 5);
         // 'app1' is invalid, so no insertion; countPrefixes returns 0
         assertEquals("Invalid word should not be added", 0, ac.countPrefixes("app"));
     }

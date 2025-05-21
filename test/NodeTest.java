@@ -25,7 +25,7 @@ public class NodeTest {
         assertEquals("Default words count should be 0", 0, defaultNode.getWords());
         assertEquals("Default prefixes count should be 0", 0, defaultNode.getPrefixes());
         assertNotNull("References array should not be null", defaultNode.getReferences());
-        assertEquals("References array length should be 26", 26, defaultNode.getReferences().length);
+        assertEquals("References array length should be 26", 44, defaultNode.getReferences().length);
     }
 
     /**
@@ -42,7 +42,7 @@ public class NodeTest {
         assertEquals("Words count should start at 0", 0, node.getWords());
         assertEquals("Prefixes count should start at 0", 0, node.getPrefixes());
         assertNotNull("References array should not be null", node.getReferences());
-        assertEquals("References array length should be 26", 26, node.getReferences().length);
+        assertEquals("References array length should be 26", 44, node.getReferences().length);
     }
 
     /**

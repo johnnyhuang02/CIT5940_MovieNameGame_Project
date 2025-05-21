@@ -28,8 +28,9 @@ public class MovieDatabase {
     private static final String BASE_URL = "https://api.themoviedb.org/3";
     private final HttpClient http = HttpClient.newHttpClient();
 
+    private Set<String> genreSet = new HashSet<>();
     // private autocomplete stored used for Autocomplete suggestions
-     private AutoComplete auto = new AutoComplete();
+    private AutoComplete auto = new AutoComplete();
 
     // debug usage
 //    private int errorCounts = 0;
@@ -100,12 +101,14 @@ public class MovieDatabase {
 //                    errorCounts += 1;
 
                 } catch (CsvValidationException e) {
-                    System.err.println(rowNum + " skipping malformed CSV line due to unterminated quoted field");
-                    e.printStackTrace();
+//                    System.err.println(rowNum + " skipping malformed CSV line due to unterminated quoted field");
+//                    e.printStackTrace();
+                    continue;
                     // continue with next line
                 } catch (Exception e) {
-                    System.err.println("skipping malformed record: possible parsing issue.");
-                    e.printStackTrace();
+//                    System.err.println("skipping malformed record: possible parsing issue.");
+//                    e.printStackTrace();
+                    continue;
                 }
                 rowNum += 1;
             }
@@ -141,28 +144,27 @@ public class MovieDatabase {
                         try {
                             year = Integer.parseInt(date.substring(0, 4));
                         } catch (NumberFormatException ignored) {
-                            System.err.println("error in loading year for MovieId: " + id);
+//                            System.err.println("error in loading year for MovieId: " + id);
+                            continue;
                         }
                     }
 
                     // get list of genres
                     List<String> genres = parseGenreNames(row[idx.get("genres")]);
-
+                    genreSet.addAll(genres);
                     // set year and genres
                     m.setYear(year);
                     m.setGenres(genres);
 
                 } catch (Exception e) {
-                    System.err.println("Skipping malformed row: " + Arrays.toString(row));
-                    e.printStackTrace();
+//                    System.err.println("Skipping malformed row: " + Arrays.toString(row));
+//                    e.printStackTrace();
                 }
             }
         }
     }
 
-
     // --------------- API Loader ---------------
-
     private List<Movie> loadFromAPI(String title) throws IOException, InterruptedException {
         List<Movie> out = new ArrayList<>();
 
@@ -173,6 +175,7 @@ public class MovieDatabase {
             Movie m = fetchFullMovie(id);
             // cache
             moviesById.put(id, m);
+            genreSet.addAll(m.getGenres());
             indexTitle(m.getTitle(), id);
             auto.addWord(m.getTitle().toLowerCase(), 1);
             out.add(m);
@@ -192,6 +195,7 @@ public class MovieDatabase {
                 API_KEY,
                 URLEncoder.encode(title, StandardCharsets.UTF_8)
         );
+        // http GET request
         HttpResponse<String> resp = http.send(
                 HttpRequest.newBuilder(URI.create(url)).GET().build(),
                 HttpResponse.BodyHandlers.ofString()
@@ -235,7 +239,7 @@ public class MovieDatabase {
         // genres
         List<String> genres = new ArrayList<>();
         for (var g : root.getAsJsonArray("genres")) {
-            genres.add(g.getAsJsonObject().get("name").getAsString());
+            genres.add(g.getAsJsonObject().get("name").getAsString().toLowerCase());
         }
 
         // cast
@@ -256,7 +260,6 @@ public class MovieDatabase {
 
         return new Movie(title, year, genres, cast, crew);
     }
-
 
     // --------------- public function calls -------------------------
 
@@ -290,6 +293,11 @@ public class MovieDatabase {
             titleSuggestion.add(suggestions.get(i).getTerm());
         }
         return titleSuggestion;
+    }
+
+    // get the genreSet()
+    public Set<String> getGenreSet() {
+        return genreSet;
     }
 
     // pick a random
@@ -336,12 +344,13 @@ public class MovieDatabase {
             for (var el : arr) {
                 JsonObject obj = el.getAsJsonObject();
                 if (obj.has("name")) {
-                    names.add(obj.get("name").getAsString());
+                    names.add(obj.get("name").getAsString().toLowerCase());
                 }
             }
         } catch (Exception e) {
             // malformed JSON -> just return empty genres list
         }
+//        genreSet.addAll(names);
         return names;
     }
 

@@ -38,10 +38,10 @@ public class MovieDatabaseTest {
 
         List<String> genres = avatar.getGenres();
         assertEquals(4, genres.size());
-        assertTrue(genres.contains("Action"));
-        assertTrue(genres.contains("Adventure"));
-        assertTrue(genres.contains("Fantasy"));
-        assertTrue(genres.contains("Science Fiction"));
+        assertTrue(genres.contains("action"));
+        assertTrue(genres.contains("adventure"));
+        assertTrue(genres.contains("fantasy"));
+        assertTrue(genres.contains("science fiction"));
 
         // check crew, contain 153
         List<Person> crew = avatar.getCrew();
@@ -62,16 +62,19 @@ public class MovieDatabaseTest {
 
         List<Movie> avatars = db.getMovieByTitle("Avatar");
         assertNotNull("getMovieByTitle should not return null", avatars);
-        assertFalse("There should be at least one movie called Avatar", avatars.isEmpty());
-
-        assertEquals(1, db.getSuggestions("").size());
+        assertFalse("There should be at least one movie", avatars.isEmpty());
+        List<String> suggest = db.getSuggestions("a");
+        assertTrue(suggest.size() <= 10);
         assertEquals("avatar", db.getSuggestions("a").get(0));
 
         Movie avatar = avatars.get(0);
+//        for (String genre : avatar.getGenres()) {
+//            System.out.println(genre);
+//        }
         // Check the year
         assertEquals(2009, avatar.getYear());
-
-        // Check that Sam Worthington appears in the cast
+//
+//        // Check that Sam Worthington appears in the cast
         boolean hasSam = avatar.getCast().stream()
                 .anyMatch(p -> "Sam Worthington".equals(p.getName()));
         assertTrue("Cast should contain Sam Worthington", hasSam);
@@ -80,9 +83,16 @@ public class MovieDatabaseTest {
         List<Person> crew = avatar.getCrew();
 //        System.out.println(crew.size());
         List<Person> cast = avatar.getCast();
-//        System.out.println(cast.size());
+        System.out.println(cast.size());
         assertNotNull(cast);
         assertNotNull(crew);
+
+        List<Movie> movie2 = db.getMovieByTitle("What Lies Beneath");
+        List<String> suggest2 = db.getSuggestions("a");
+        System.out.println(suggest.size());
+        System.out.println(suggest.get(0));
+
+
     }
 
     @Test

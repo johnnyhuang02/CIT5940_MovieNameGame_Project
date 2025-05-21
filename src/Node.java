@@ -8,7 +8,7 @@ public class Node {
     private int words;
     private int prefixes;
     private Node[] references;
-
+    private static final int   ALPHABET_SIZE = 44;
     /**
      * Initialize a Node with an empty string and 0 weight; useful for
      * writing tests.
@@ -18,7 +18,7 @@ public class Node {
         term = new Term("", 0);
         words = 0;
         prefixes = 0;
-        references = new Node[26];
+        references = new Node[ALPHABET_SIZE];
     }
 
     /**
@@ -37,7 +37,7 @@ public class Node {
         words = 0;
 //        prefixes = 1;
         prefixes = 0;
-        references = new Node[26];
+        references = new Node[ALPHABET_SIZE];
     }
 
     public Term getTerm() {

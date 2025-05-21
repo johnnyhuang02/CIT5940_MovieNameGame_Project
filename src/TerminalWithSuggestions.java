@@ -9,6 +9,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -28,7 +29,8 @@ public class TerminalWithSuggestions {
     private final int maxSuggestions = 10;
 
     // turn timer
-    private int secondsRemaining = 30;
+    private final int resetTime = 30;
+    private int secondsRemaining = resetTime;
     private boolean timerRunning = false;
     private final ScheduledExecutorService scheduler;
 
@@ -57,7 +59,7 @@ public class TerminalWithSuggestions {
         // 1) kickoff first turn
         engine.startTurn();
         timerRunning     = true;
-        secondsRemaining = 30;
+        secondsRemaining = resetTime;
         updateScreen();
 
         boolean running = true;
@@ -99,7 +101,8 @@ public class TerminalWithSuggestions {
         }
 
         // 4) draw final game‑over screen
-        List<String> lines = engine.getDisplayLines();
+        List<String> lines = new ArrayList<>();
+//        List<String> lines = engine.getDisplayLines();
         lines.add("=== GAME OVER ===");
         lines.addAll(engine.getFinalMessages());
         synchronized(screen) {
@@ -110,7 +113,14 @@ public class TerminalWithSuggestions {
             screen.refresh();
         }
 
-        // 5) cleanup
+
+        // 5) wait for user to press any key
+        printString(0, screen.getTerminalSize().getRows() - 1, "Press any key to exit...");
+        screen.refresh();
+
+        terminal.readInput();
+
+        // 6) cleanup
         scheduler.shutdown();
         screen.close();
         terminal.close();
@@ -132,17 +142,25 @@ public class TerminalWithSuggestions {
 
     private void handleEnter() throws IOException, InterruptedException {
         String choice = currentInput.toString().trim();
-        engine.playMove(choice);
-
-        if (!engine.isGameOver()) {
+        engine.clearDisplayBuffer(); // added
+        boolean success = engine.playMove(choice);
+//        updateScreen();
+        if (success) {
+//        if (!engine.isGameOver()) {
             // reset for next turn
+//            engine.clearDisplayBuffer();
+
             currentInput.setLength(0);
-            cursorPosition    = 2;
-            suggestions       = List.of();
-            secondsRemaining  = 30;
-            timerRunning      = true;
+            cursorPosition = 2;
+            suggestions = List.of();
+
+            secondsRemaining = resetTime;
+            timerRunning = true;
             engine.startTurn();
-        } else {
+//            engine.clearDisplayBuffer();
+        }
+//        } else {
+        if (engine.isGameOver()) {
             timerRunning = false;
         }
     }
@@ -187,6 +205,7 @@ public class TerminalWithSuggestions {
                     new TerminalPosition(2 + currentInput.length(), baseRow)
             );
             screen.refresh();
+//            engine.clearDisplayBuffer();
         }
     }
 

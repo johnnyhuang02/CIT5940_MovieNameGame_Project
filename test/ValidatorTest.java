@@ -48,12 +48,6 @@ public class ValidatorTest {
         player = new Player("Test Player", "genre:drama");
     }
 
-    // Test valid connection by genre
-    @Test
-    public void testValidByGenre() {
-        assertTrue("Genre connection should be valid", validator.isValidMovie(movieA, movieB, "genre"));
-    }
-
     // Test invalid genre connection
     @Test
     public void testInvalidByGenre() {

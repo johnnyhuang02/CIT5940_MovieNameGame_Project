@@ -1,13 +1,26 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 
 public class AutoComplete implements IAutoComplete {
 
     private Node root;
     private int maxSuggestions = 10;
+
+    // these are the characters accepted, consider legal char
+    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789 '.,:!&-";
+    private static final int   ALPHABET_SIZE = 44; // 26 eng char, 10 num, 8 special char
+    private static final Map<Character,Integer> INDEX = new HashMap<>();
+    static {
+        for (int i = 0; i < ALPHABET_SIZE; i++) {
+            INDEX.put(ALPHABET.charAt(i), i);
+        }
+    }
+
 
     // empty trie
     public AutoComplete() {
@@ -17,9 +30,8 @@ public class AutoComplete implements IAutoComplete {
 
     private boolean isValid(String str) {
         // check if invalid, and convert to lower case
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c < 'a' || c > 'z') {
+        for (char c : str.toCharArray()) {
+            if (!INDEX.containsKey(c)) {
                 return false;
             }
         }
@@ -53,7 +65,12 @@ public class AutoComplete implements IAutoComplete {
 
         for (int i = 0; i < lower.length(); i++) {
             char c = lower.charAt(i);
-            int index = c - 'a';
+//            int index = c - 'a';
+            Integer idx = INDEX.get(c);
+            if (idx == null) {
+                return;
+            }
+            int index = idx;
             Node[] children = currNode.getReferences();
             if (children[index] == null) {
                 children[index] = new Node();
@@ -66,43 +83,6 @@ public class AutoComplete implements IAutoComplete {
         currNode.setTerm(new Term(lower, weight));
         currNode.setWords(1);
 
-    }
-
-    @Override
-    // won't actually use this
-    public Node buildTrie(String filename, int k) {
-        this.maxSuggestions = k;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String line = br.readLine();
-
-            try {
-                int count = Integer.parseInt(line.trim());
-                line = br.readLine();
-            } catch (NumberFormatException e) {
-                // if not, meaning first line is not total count
-            }
-
-            while (line != null) {
-                line = line.trim();
-                if (!line.isEmpty()) {
-                    String[] weightAndTerm = line.split("\\s+");
-                    if (weightAndTerm.length >= 2) {
-                        try {
-                            long weight = Long.parseLong(weightAndTerm[0]);
-                            String word = weightAndTerm[1];
-                            addWord(word, weight);
-                        } catch (NumberFormatException nfe) {
-                            // skip the line if parsing fails, meaning more than 2 components
-                        } // end try
-                    } // end if
-                } // end if
-                line = br.readLine(); //update to next line
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return root;
     }
 
     @Override
@@ -122,7 +102,8 @@ public class AutoComplete implements IAutoComplete {
 
         for (int i = 0; i < lower.length(); i++) {
             char c = lower.charAt(i);
-            int index = c - 'a';
+//            int index = c - 'a';
+            int index = INDEX.get(c);
             Node[] children = currNode.getReferences();
             if (children[index] == null) {
                 return null;
@@ -145,8 +126,6 @@ public class AutoComplete implements IAutoComplete {
         }
         return subTrie.getPrefixes();
     }
-
-
 
     @Override
     public List<ITerm> getSuggestions(String prefix) {

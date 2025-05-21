@@ -3,10 +3,12 @@
 public class Validator {
 	public boolean isValidMovie(Movie current, Movie next, String connectionType) {
 	    switch (connectionType.toLowerCase()) {
-	        case "genre": return current.isConnectedByGenre(next);
-	        case "cast": return current.isConnectedByCast(next);
+			// cannot connect by genre
+//	        case "genre": return current.isConnectedByGenre(next);
+			case "year": return current.isConnectedByYear(next);
+			case "cast": return current.isConnectedByCast(next);
 	        case "crew": return current.isConnectedByCrew(next);
-	        case "year": return current.isConnectedByYear(next);
+
 	        default: return false;
 	    }
 	}
